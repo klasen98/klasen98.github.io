@@ -1,12 +1,658 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Min GitHub Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jakob Klasén – Javautvecklare</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --bg: #0d0f14;
+      --surface: #141720;
+      --border: #232736;
+      --accent: #4fffb0;
+      --accent2: #4f9fff;
+      --text: #e8eaf2;
+      --muted: #6b7089;
+      --tag-bg: #1a1f2e;
+    }
+ 
+    html { scroll-behavior: smooth; }
+ 
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+ 
+    /* ─── GRID BACKGROUND ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+ 
+    /* ─── GLOW ORBS ─── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(79, 255, 176, 0.07);
+      top: -100px; left: -100px;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: rgba(79, 159, 255, 0.07);
+      bottom: 100px; right: -80px;
+    }
+ 
+    /* ─── LAYOUT ─── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+ 
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 15, 20, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--text); }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+ 
+    /* ─── HERO ─── */
+    #hero {
+      padding: 100px 0 80px;
+    }
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.1s forwards;
+    }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 8vw, 72px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+    h1 .dim { color: var(--muted); }
+    .hero-tagline {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 36px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.3s forwards;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.4s forwards;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 22px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-weight: 500;
+    }
+    .btn-primary:hover { background: #6fffbc; transform: translateY(-1px); }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+ 
+    /* ─── STATUS BADGE ─── */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(79, 255, 176, 0.08);
+      border: 1px solid rgba(79, 255, 176, 0.2);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.05s forwards;
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+ 
+    /* ─── SECTIONS ─── */
+    section { padding: 72px 0; }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .section-num {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 8px;
+    }
+ 
+    /* ─── SKILLS ─── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .skill-dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .skill-card span { font-size: 13px; }
+ 
+    /* ─── TIMELINE ─── */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 8px; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -32px; top: 7px;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+    .tl-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .tl-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .tl-company {
+      color: var(--accent);
+      font-size: 12px;
+    }
+    .tl-period {
+      color: var(--muted);
+      font-size: 11px;
+      margin-left: auto;
+      background: var(--tag-bg);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+    .tl-desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+    .tl-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .tag {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: var(--accent2);
+      letter-spacing: 0.03em;
+    }
+ 
+    /* ─── PROJECTS ─── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .project-card:hover {
+      border-color: var(--accent2);
+      transform: translateY(-3px);
+    }
+    .project-icon {
+      font-size: 24px;
+      margin-bottom: 14px;
+    }
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+    .project-desc {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.75;
+    }
+ 
+    /* ─── CONTACT ─── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .contact-card:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .contact-card .icon { font-size: 18px; flex-shrink: 0; }
+    .contact-card .label { font-size: 11px; color: var(--muted); }
+    .contact-card .value { font-size: 13px; }
+ 
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      position: relative;
+      z-index: 1;
+    }
+ 
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+ 
+    /* ─── MOBILE ─── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      #hero { padding: 64px 0 60px; }
+      .tl-period { margin-left: 0; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Tja 👋</h1>
-  <p>Min första GitHub Page är live.</p>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+ 
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <a class="nav-logo" href="#hero">Jakob<span>.dev</span></a>
+      <ul class="nav-links">
+        <li><a href="#skills">Kompetenser</a></li>
+        <li><a href="#education">Utbildning</a></li>
+        <li><a href="#experience">Erfarenhet</a></li>
+        <li><a href="#projects">Projekt</a></li>
+        <li><a href="#contact">Kontakt</a></li>
+      </ul>
+    </div>
+  </nav>
+ 
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        Söker LIA / praktik v.46 2026 – v.22 2027
+      </div>
+      <p class="hero-label">// Javautvecklare · Stockholm</p>
+      <h1>Jakob<br><span class="dim">Klasén</span></h1>
+      <p class="hero-tagline">
+        Javautvecklarstudent på IT-Högskolan med fokus på backend och systemutveckling.
+        Noggrann, lösningsorienterad och redo att bidra i ett riktigt team.
+      </p>
+      <div class="hero-cta">
+        <a href="mailto:klasen98@live.se" class="btn btn-primary">Kontakta mig</a>
+        <a href="https://www.linkedin.com/in/" target="_blank" class="btn btn-ghost">LinkedIn →</a>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-num">01</span>
+        <h2>Kompetenser</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="skills-grid fade-in">
+        <div class="skill-card"><span class="skill-dot"></span><span>Java (OOP)</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>Spring Boot / JEE</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>Backend & REST API</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>Databaser (SQL & NoSQL)</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>Git & Maven</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>Docker & Jenkins</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>HTML, CSS, JavaScript</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>React</span></div>
+        <div class="skill-card"><span class="skill-dot"></span><span>Agila metoder</span></div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-num">02</span>
+        <h2>Utbildning</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="timeline fade-in">
+        <div class="timeline-item">
+          <div class="tl-meta">
+            <span class="tl-title">Javautvecklare</span>
+            <span class="tl-company">IT-Högskolan Stockholm</span>
+            <span class="tl-period">2025 – 2027</span>
+          </div>
+          <p class="tl-desc">
+            Tvåårig utbildning med fokus på Java, backend och systemutveckling.
+            Kurser inkluderar komplex Javautveckling, webbtjänster, databasutveckling och agil metodik.
+          </p>
+          <div class="tl-tags">
+            <span class="tag">Java</span>
+            <span class="tag">Spring Boot</span>
+            <span class="tag">SQL</span>
+            <span class="tag">NoSQL</span>
+            <span class="tag">JDBC</span>
+            <span class="tag">Docker</span>
+            <span class="tag">Jenkins</span>
+            <span class="tag">GitHub</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-meta">
+            <span class="tl-title">El & Energiprogrammet – Datorteknik</span>
+            <span class="tl-company">Tyresö Gymnasium</span>
+            <span class="tl-period">Examen 2018</span>
+          </div>
+          <p class="tl-desc">Gymnasieutbildning med inriktning mot datorteknik.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-num">03</span>
+        <h2>Projekt</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="projects-grid fade-in">
+        <div class="project-card">
+          <div class="project-icon">🛒</div>
+          <div class="project-title">Webshop</div>
+          <p class="project-desc">
+            OOP-baserad webshop med tydlig klasstruktur, affärslogik och testklasser för kvalitetssäkring.
+            Byggd i Java med Spring Boot.
+          </p>
+          <div class="tl-tags" style="margin-top:14px">
+            <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">OOP</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-icon">🎮</div>
+          <div class="project-title">Spel i Java</div>
+          <p class="project-desc">
+            Spelapplikation byggd för att träna logiskt tänkande och ren kodstruktur i Java.
+          </p>
+          <div class="tl-tags" style="margin-top:14px">
+            <span class="tag">Java</span><span class="tag">OOP</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-icon">🗄️</div>
+          <div class="project-title">Databasutveckling</div>
+          <p class="project-desc">
+            Skapade relationsdatabaser med SQL och NoSQL, kopplade dem till Java-applikationer via JDBC.
+          </p>
+          <div class="tl-tags" style="margin-top:14px">
+            <span class="tag">SQL</span><span class="tag">NoSQL</span><span class="tag">JDBC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-num">04</span>
+        <h2>Yrkeserfarenhet</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="timeline fade-in">
+        <div class="timeline-item">
+          <div class="tl-meta">
+            <span class="tl-title">Verkstadsarbetare</span>
+            <span class="tl-company">AB Spiralspecialisten</span>
+            <span class="tl-period">2021 – 2025</span>
+          </div>
+          <p class="tl-desc">Tillverkning av fjädrar enligt ritningar och kundspecifikationer. Problemlösning, samarbete och arbete under tidspress.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-meta">
+            <span class="tl-title">Fastighetsskötare</span>
+            <span class="tl-company">Driftia Förvaltning AB</span>
+            <span class="tl-period">2020</span>
+          </div>
+          <p class="tl-desc">Rondering, tillsyn och serviceärenden inklusive enklare reparationer och underhåll.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-meta">
+            <span class="tl-title">Butikssäljare</span>
+            <span class="tl-company">Bokcompaniet</span>
+            <span class="tl-period">2018 – 2019</span>
+          </div>
+          <p class="tl-desc">Kundbemötande, försäljning och varuhantering.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-num">05</span>
+        <h2>Kontakt</h2>
+        <div class="section-line"></div>
+      </div>
+      <p class="tl-desc fade-in" style="margin-bottom:28px;max-width:500px;">
+        Söker LIA-plats hösten 2026. Hör gärna av dig om du har en passande plats
+        eller bara vill ta en kaffe och prata kod.
+      </p>
+      <div class="contact-grid fade-in">
+        <a href="mailto:klasen98@live.se" class="contact-card">
+          <span class="icon">✉️</span>
+          <div>
+            <div class="label">E-post</div>
+            <div class="value">klasen98@live.se</div>
+          </div>
+        </a>
+        <a href="tel:+46737577897" class="contact-card">
+          <span class="icon">📞</span>
+          <div>
+            <div class="label">Telefon</div>
+            <div class="value">073 757 78 97</div>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/" target="_blank" class="contact-card">
+          <span class="icon">💼</span>
+          <div>
+            <div class="label">LinkedIn</div>
+            <div class="value">Jakob Klasén</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+ 
+  <footer>
+    <div class="container">
+      <span style="color:var(--accent)">Jakob Klasén</span> · Javautvecklare · Stockholm · 2026
+    </div>
+  </footer>
+ 
+  <script>
+    // Scroll-triggered fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+ 
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
